@@ -15,6 +15,7 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { animated, useSpring, easings } from 'react-spring';
 
 const TypeQuest = styled('div')(({ theme }) => ({
   backgroundColor: `rgba(250, 250, 250, 1)`,
@@ -127,20 +128,22 @@ const TitleTop = styled('div')({
   margin: `0px`,
 });
 
-const Title = styled('div')(({ theme }) => ({
-  textAlign: `left`,
-  whiteSpace: `pre-wrap`,
-  fontSynthesis: `none`,
-  color: theme.palette['Text']['Primary'],
-  fontStyle: `normal`,
-  fontFamily: `Heebo`,
-  fontWeight: `700`,
-  fontSize: `38px`,
-  letterSpacing: `0px`,
-  textDecoration: `underline`,
-  textTransform: `none`,
-  margin: `0px`,
-}));
+const Title = animated(
+  styled('div')(({ theme }) => ({
+    textAlign: `left`,
+    whiteSpace: `pre-wrap`,
+    fontSynthesis: `none`,
+    color: theme.palette['Text']['Primary'],
+    fontStyle: `normal`,
+    fontFamily: `Heebo`,
+    fontWeight: `700`,
+    fontSize: `38px`,
+    letterSpacing: `0px`,
+    textDecoration: `underline`,
+    textTransform: `none`,
+    margin: `0px`,
+  }))
+);
 
 const Q3Dots = styled('div')({
   display: `flex`,
@@ -208,6 +211,14 @@ const ButtonContained = styled(Button)({
 });
 
 function Card19(props) {
+  const [TitleSpring, TitleApi] = useSpring(() => ({
+    config: {
+      duration: 750,
+      easing: easings['easeInOutExpo'],
+    },
+    delay: 0,
+    from: { transform: 'translateX(0px)', opacity: 1 },
+  }));
   return (
     <TypeQuest className={props.className}>
       {props.posts &&
@@ -220,7 +231,17 @@ function Card19(props) {
               <Content>
                 <Details>
                   <TitleTop>
-                    <Title>{props.posts[index].title}</Title>
+                    <Title
+                      onClick={() => {
+                        TitleApi.start({
+                          ...{ transform: 'translateX(-100px)', opacity: 0 },
+                          delay: 0,
+                        });
+                      }}
+                      style={{ ...TitleSpring }}
+                    >
+                      {props.posts[index].title}
+                    </Title>
                     <Q3Dots>
                       <Rectangle1></Rectangle1>
                       <Rectangle2></Rectangle2>
